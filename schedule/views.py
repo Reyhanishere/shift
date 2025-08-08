@@ -86,7 +86,7 @@ def edit_profile(request):
         form = NurseProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('nurse_dashboard')  # or wherever you want
+            return redirect('nurse_dashboard') 
     else:
         form = NurseProfileForm(instance=profile)
 
@@ -131,7 +131,7 @@ def shift_calendar(request):
 
 def shift_detail(request, shift_id):
     shift = get_object_or_404(Shift, id=shift_id)
-    nurses = NurseProfile.objects.all()  # بعداً می‌تونیم فیلتر کنیم براساس دسترسی و صلاحیت
+    nurses = NurseProfile.objects.all()  
     return render(request, 'schedule/shift_detail.html', {
         'shift': shift,
         'nurses': nurses,
@@ -215,3 +215,4 @@ def nurse_dashboard(request):
         'shift_requests': shift_requests
 
     })
+
