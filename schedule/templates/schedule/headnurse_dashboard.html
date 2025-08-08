@@ -1,0 +1,7 @@
+{% extends 'schedule/base.html' %}
+{% block content %}
+<form method="post" action="{% url 'generate_schedule' %}">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-primary mt-3">Generate Schedule</button>
+</form>
+{% endblock %}

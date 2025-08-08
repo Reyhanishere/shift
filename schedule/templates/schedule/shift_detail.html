@@ -1,0 +1,12 @@
+<h2>Shift Detail</h2>
+<p><strong>Date:</strong> {{ shift.date }}</p>
+<p><strong>Time:</strong> {{ shift.start_time }} - {{ shift.end_time }}</p>
+
+<h3>Available Nurses:</h3>
+<ul>
+  {% for nurse in nurses %}
+    <li>{{ nurse.user.get_full_name }} ({{ nurse.specialty }})</li>
+  {% empty %}
+    <li>No nurses found</li>
+  {% endfor %}
+</ul>

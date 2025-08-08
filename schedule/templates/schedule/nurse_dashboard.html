@@ -1,0 +1,28 @@
+{% extends 'schedule/base.html' %}
+
+{% block title %}داشبورد پرستار{% endblock %}
+
+{% block content %}
+<h3>سلام {{ nurse.user.get_full_name }}</h3>
+
+<table class="table table-bordered table-striped mt-4">
+  <thead class="table-light">
+    <tr>
+      <th>تاریخ</th>
+      <th>شیفت ترجیحی</th>
+      <th>مرخصی؟</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for req in shift_requests %}
+    <tr>
+      <td>{{ req.date }}</td>
+      <td>{{ req.get_preferred_shift_display }}</td>
+      <td>{{ req.wants_off|yesno:"بله,خیر" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">درخواستی ثبت نشده</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
