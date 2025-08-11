@@ -1,120 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+    {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 9 Jan 2002 8:35:00 GMT">
     <title>Shift Manager</title>
+    <meta name="description" content="شیفت | پلتفرم ثبت شیفت سرپرستار و پرستار"/>
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gulzar&display=swap" rel="stylesheet">
 
     <style>
     body {
-    margin: 0;
-    font-family: 'Noto Sans';
-    background-color: #70a1d5;
-}
+    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("{% static 'schedule/images/background.jpeg' %}");
+    font-family: "Gulzar", serif;
+    font-weight: 400;
+    font-style: normal;
 
-a {
-  text-decoration: none;
-  color: #46151d;
-}
-
-.container {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
 }
 
 .text-section {
-    flex: 1;
-    color: white;
-    padding: 0 50px 50px 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    margin-top: 0;
+    background-color: #FFCFCF;
 }
 
-.text-section h1 {
-    font-family:"Noto Sans";
-    font-size: 2.5em;
-    margin-bottom: 0;
-    margin-top: 110px;
-    
-}
-.text-section h2 {
-    font-family: 'Noto Sans';
-    font-size: 1em;
-    margin-bottom: 0;
-    
-}
 
-.head{
-  margin: 0 auto 75px auto;
-}
-
-.text-section p {
-    font-family: 'Noto Sans';
-    font-size: 1.2em;
-    margin-bottom: 12px;
-    line-height: 1.5;
-}
-
-.text-section button {
-    font-family:"Noto Sans";
-    padding: 10px 20px;
-    background-color: white;
-    color: #1F132B;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 2em;
-}
-
-#dawsh-help{
-  border-radius: 30%;
-  height: auto;
-  width: 40%;
-  float: left;
-  margin: 110px 10px 10px auto;
-  text-align: center;
-  
-}
-
-.butt{
-    display: flex;
-    justify-items: center;
-}
-
-#b1{
-    border-radius: 5px;
-    background-color: #FFAA80;
-    color: #9a3047;
-    margin-right: 20px;
-    font-size:large;
-}
-#b2{
-    border-radius: 5px;
-    background-color:#FFAA80;
-    color: #54C7E4;
-    font-size:large;
-}
-
-#b1:hover{
-    background-color: #EAD196;
-    margin-right: 20px;
-}
-#b2:hover{
-    border-radius: 10%;
-    background-color: #EAD196;
-}
-
-.image-section {
-    flex: 2;
-    background-image: url(frog.jpg);
-    background-size: cover;
-    background-position: center;
-    clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
-}
 
 .footer {
   position: fixed;
@@ -127,53 +41,36 @@ a {
   text-align: left;
 }
 
-.with a {
-  color:white;
-  margin-right: 15px;
-  text-decoration: none;
-  left: 2px;
-  bottom: 10px;
-  height: 5%;
-  width: 50%;
-  background-color: #1F132B;
-  color:white;
-  text-align: left;
-}
-
-.with a:hover{
-color:#FFAA80;
-}
 </style>
 </head>
-<body>
-<div class="container">
-    <div class="text-section">
-        <div class="head">
-            <img id="dawsh-help" src="./images/icon/download.svg" alt="medepartout-logo">
-            <h1>Welcome to medepartout Website</h1>
-            <h2>The Site is Under Construction</h2>
-        </div>
-        
-        <p>Sign up to see our latest updates :</p>
-        <div class="butt">
-            <button id="b1"><a href="https://medepartout.ir/accounts/signup/">sign up</a></button>
-            <button id="b2"><a href="https://medepartout.ir/accounts/login/">log in</a></button>
-        </div>
-        <div class="footer">
-            <div class="with">
-                <a href="https://medepartout.ir/cases/">Cases App</a>
-                <a href="https://medepartout.ir/docs/">Docs</a>
-                <a href="https://medepartout.ir/about/">About</a>
-            </div>
-            <p>medepartout | All Right Reserved © 2024</p>           
 
-        </div>
+<body dir="rtl" class="min-h-screen flex flex-col justify-between">
+
+<div class="text-section mx-auto my-16 p-8 w-4/5 md:w-2/5 h-auto shadow-sm focus:ring-emerald-500 border-gray-300 rounded-md ">
+    <div class="head pt-6">
+        <h1 class="text-center  my-8 text-5xl leading-22 lg:leading-9">به سامانه ی مدیریت شیفت خوش آمدید.</h1>
+
     </div>
-    <div class="image-section">
-        bod
-            
+    
+    <p class="text-center  text-xl font-bold my-8">ورود به عنوان:</p>
+    <div class="flex flex-col gap-2">
+        <button 
+        class="font-medium px-2 py-4 rounded-md shadow-sm border border-rose-700 text-gray-700 bg-[#FF6363] hover:bg-[#ffa384] focus:outline-none  focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 w-2/5 text-3xl md:text-4xl mx-auto">
+        <a href="https://medepartout.ir/accounts/signup/">پرستار</a></button>
+        
+        <button
+        class="font-medium px-2 py-4 rounded-md shadow-sm border border-rose-700 text-gray-700 bg-[#FF6363] hover:bg-[#ffa384] focus:outline-none  focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 w-2/5 text-3xl md:text-4xl mx-auto">
+        <a href="https://medepartout.ir/accounts/login/">سرپرستار</a></button>
     </div>
+    <div class="flex flex-col gap-2">
+        <p class="text-center text-2xl font-bold my-2">یا</p>
+        <button 
+        class="font-medium px-2 py-4 rounded-md shadow-sm border border-rose-700 text-gray-700 bg-[#FF6363] hover:bg-[#ffa384] focus:outline-none  focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 w-2/5 text-3xl  md:text-4xl mx-auto">
+        <a href="https://medepartout.ir/accounts/login/">ثبت نام</a></button>
+    </div>
+
 </div>
+
 
 </body>
 </html>
