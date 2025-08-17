@@ -17,7 +17,7 @@ SHIFT_CHOICES = [
 ]
 
 def home(request):
-    return render(request, 'schedule/home.html')  # You need to create this template
+    return render(request, 'schedule/home.html')  
 
 def register(request):
     if request.method == 'POST':
@@ -67,7 +67,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('nurse_dashboard')  # change to your desired redirect
+            return redirect('nurse_dashboard')  
         else:
             messages.error(request, 'Invalid username or password.')
             return redirect('login')
@@ -86,7 +86,7 @@ def edit_profile(request):
         form = NurseProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('nurse_dashboard')  # or wherever you want
+            return redirect('nurse_dashboard') 
     else:
         form = NurseProfileForm(instance=profile)
 
@@ -100,7 +100,7 @@ def submit_shift_request(request):
             shift_request = form.save(commit=False)
             shift_request.nurse = request.user.nurseprofile
             shift_request.save()
-            return redirect('nurse_dashboard')  # یا هر صفحه‌ای که دوست داری
+            return redirect('nurse_dashboard')  
     else:
         form = ShiftRequestForm()
 
@@ -131,7 +131,7 @@ def shift_calendar(request):
 
 def shift_detail(request, shift_id):
     shift = get_object_or_404(Shift, id=shift_id)
-    nurses = NurseProfile.objects.all()  # بعداً می‌تونیم فیلتر کنیم براساس دسترسی و صلاحیت
+    nurses = NurseProfile.objects.all()  
     return render(request, 'schedule/shift_detail.html', {
         'shift': shift,
         'nurses': nurses,
@@ -153,35 +153,34 @@ def generate_schedule(request):
     assigned = []
 
     for req in requests:
-        # بررسی اینکه آیا این پرستار قبلاً شیفت در همان تاریخ دارد
         existing = Shift.objects.filter(nurse=req.nurse, date=req.date)
         if existing.exists():
-            continue  # نادیده بگیر چون پر شده
+            continue  
 
-        # بررسی محدودیت هفتگی
+
         week_start = req.date - timedelta(days=req.date.weekday())
         week_end = week_start + timedelta(days=6)
         weekly_shifts = Shift.objects.filter(nurse=req.nurse, date__range=[week_start, week_end]).count()
         if weekly_shifts >= rules.max_shifts_per_week:
             continue
 
-        # بررسی محدودیت روزانه
+
         daily_shifts = Shift.objects.filter(nurse=req.nurse, date=req.date).count()
         if daily_shifts >= rules.max_shifts_per_day:
             continue
 
-        # بررسی شبانه اگر لازم باشد
+
         if req.shift_type == 'night' and not rules.allow_night_shifts:
             continue
 
-        # بررسی استراحت بین شیفت‌ها
+
         previous_shift = Shift.objects.filter(nurse=req.nurse, date__lt=req.date).order_by('-date').first()
         if previous_shift:
             rest_days = (req.date - previous_shift.date).days
             if rest_days * 24 < rules.min_rest_hours_between_shifts:
                 continue
 
-        # در صورت عبور از همه چک‌ها:
+
         Shift.objects.create(nurse=req.nurse, date=req.date, shift_type=req.shift_type)
         assigned.append(req)
 
@@ -214,4 +213,6 @@ def nurse_dashboard(request):
     return render(request, 'schedule/nurse_dashboard.html', {
         'nurse': profile,
         'shift_requests': shift_requests
+
     })
+
