@@ -8,6 +8,11 @@ from .models import Shift, NurseProfile, ShiftRequest, SchedulingRule
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import timedelta
+from django.views.generic import ListView
+from django.contrib.auth import get_user_model
+from allauth.account.views import SignupView
+from .models import Shift
+
 import json
 
 SHIFT_CHOICES = [
@@ -17,7 +22,8 @@ SHIFT_CHOICES = [
 ]
 
 def home(request):
-    return render(request, 'schedule/home.html')  
+    shifts = Shift.objects.all()
+    return render(request, "shifts/home.html", {"shifts": shifts})
 
 def register(request):
     if request.method == 'POST':
@@ -216,3 +222,6 @@ def nurse_dashboard(request):
 
     })
 
+
+class CustomSignupView(SignupView):
+    template_name = "account/signup.html"

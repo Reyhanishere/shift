@@ -27,6 +27,7 @@ class NurseProfile(models.Model):
         return self.full_name()
     
 class Shift(models.Model):
+    title = models.CharField(max_length=200, default='Morning Shift')
     nurse = models.ForeignKey(NurseProfile, on_delete=models.CASCADE, related_name='requested_shifts',default="none")
     assigned_nurse = models.ForeignKey(NurseProfile, on_delete=models.CASCADE, related_name='assigned_shifts',default="none")
     start_time = models.DateTimeField(default="8 AM")
@@ -39,7 +40,7 @@ class Shift(models.Model):
         unique_together = ('date', 'shift_type', 'ward')
 
     def __str__(self):
-        return f"{self.nurse} | {self.start_time} - {self.end_time}"
+        return f"{self.title} {self.nurse} | {self.start_time} - {self.end_time}"
 
 class ShiftRequest(models.Model):
     STATUS_CHOICES = [

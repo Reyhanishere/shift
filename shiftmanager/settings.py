@@ -1,14 +1,12 @@
 from pathlib import Path
-# import dj_database_url
-# from decouple import Config, RepositoryEnv
-# import os
-# from django.core.exceptions import ImproperlyConfigured
-# from dotenv import load_dotenv
+import dj_database_url
+from decouple import Config, RepositoryEnv
+import os
+from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-SECRET_KEY = 'django-insecure-_le&i7y9qzyi3v)y^k(kp61d65+ou33j71&g1x$j7*p$5h&w#7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -22,15 +20,34 @@ AUTHENTICATION_BACKENDS = [
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django.contrib.sites'
+]
+THIRD_PARTY_APPS = [
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'django_browser_reload',
+    'widget_tweaks',
+
+]
+
+SITE_ID = 2
+
+PROJECT_APPS = [
     'schedule.apps.ScheduleConfig',
 ]
+
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS  + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -40,14 +57,34 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # added by chatgpt to support language switching
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += [
+        "debug_toolbar"
+    ]
+
+    MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware"
+    ]
+
+    import socket
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+
+    INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] + ["127.0.0.1"]
+    INTERNAL_IPS += ["192.168.65.1"]
 
 ROOT_URLCONF = 'shiftmanager.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "schedule/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,6 +101,18 @@ WSGI_APPLICATION = 'shiftmanager.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+load_dotenv(dotenv_path='.env')
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+if not SECRET_KEY:
+    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+
+env_file = BASE_DIR / '.env'
+
+
+config = Config(RepositoryEnv(env_file))
 
 DATABASES = {
     'default': {
