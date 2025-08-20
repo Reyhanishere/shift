@@ -1,5 +1,24 @@
 from django.db import models
-from django.contrib.auth.models import User
+import re
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser
+from schedule.managers import UserProfileManager
+
+class CustomUser(AbstractUser):
+
+    phone_number = models.CharField(
+        max_length=13,
+        unique=True,
+        null=True,
+        blank=True,
+        verbose_name=_("Phone Number"),
+        help_text=_("Enter a valid phone number including country code")
+    )
+
+    def __str__(self):
+        return self.username or str(self.phone_number)
+
 
 SHIFT_CHOICES = [
     ('Morning', 'Morning'),
@@ -7,16 +26,16 @@ SHIFT_CHOICES = [
     ('Night', 'Night'),
 ]
 
+CONTRACT_CHOICES = [
+    ('official', 'Official'),
+    ('insured', 'Insured'),
+]
+
 class NurseProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     position = models.CharField(max_length=100, default='nurse')
-    # def full_name(self):
-    #     return f"{self.user.first_name} {self.user.last_name}"
     full_name = models.CharField(max_length=100, default='nurse')
-    contract_type = models.CharField(
-        max_length=20,
-        choices=[('official', 'Official'), ('insured', 'Insured')]
-    )
+    contract_type = models.CharField(max_length=20, choices=CONTRACT_CHOICES)
     preferred_shifts = models.JSONField(default=dict, blank=True)  # e.g., {"Monday": ["Morning", "Night"]}
     monthly_hours_required = models.PositiveIntegerField()
     ward = models.CharField(max_length=50,default='OBGYN')
@@ -28,10 +47,16 @@ class NurseProfile(models.Model):
     
 class Shift(models.Model):
     title = models.CharField(max_length=200, default='Morning Shift')
-    nurse = models.ForeignKey(NurseProfile, on_delete=models.CASCADE, related_name='requested_shifts',default="none")
-    assigned_nurse = models.ForeignKey(NurseProfile, on_delete=models.CASCADE, related_name='assigned_shifts',default="none")
-    start_time = models.DateTimeField(default="8 AM")
-    end_time = models.DateTimeField(default="8 PM")
+    nurse = models.ForeignKey(
+        NurseProfile, on_delete=models.CASCADE,
+        related_name='requested_shifts', null=True, blank=True
+    )
+    assigned_nurse = models.ForeignKey(
+        NurseProfile, on_delete=models.CASCADE, 
+        related_name='assigned_shifts', null=True, blank=True
+    )
+    start_time = models.TimeField(default="08:00")
+    end_time = models.TimeField(default="20:00")
     date = models.DateField()
     shift_type = models.CharField(max_length=10, choices=SHIFT_CHOICES,default="MORNING")
     ward = models.CharField(max_length=50, default='OBGYN')
@@ -40,7 +65,7 @@ class Shift(models.Model):
         unique_together = ('date', 'shift_type', 'ward')
 
     def __str__(self):
-        return f"{self.title} {self.nurse} | {self.start_time} - {self.end_time}"
+        return f"{self.title} | {self.date} | {self.shift_type}"
 
 class ShiftRequest(models.Model):
     STATUS_CHOICES = [
@@ -49,8 +74,8 @@ class ShiftRequest(models.Model):
         ('rejected', 'Rejected'),
     ]
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
-    reason = models.TextField()
-    nurse = models.ForeignKey(NurseProfile, on_delete=models.CASCADE,default="none")
+    nurse = models.ForeignKey(NurseProfile, on_delete=models.CASCADE)
+    reason = models.TextField(blank=True)
     date = models.DateField()
     shift_type = models.CharField(max_length=10, choices=SHIFT_CHOICES,default="MORNING")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
@@ -60,9 +85,9 @@ class ShiftRequest(models.Model):
     
 class SchedulingRule(models.Model):
     shift_type = models.CharField(max_length=50,default="MORNING")
-    head_nurse = models.ForeignKey(User, on_delete=models.CASCADE, default="none")
+    head_nurse = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     allow_post_night_off = models.BooleanField(default=True)
-    max_nurses_per_shift = models.PositiveIntegerField(default=dict)  # e.g., {"Morning": 3, "Afternoon": 2, "Night": 1}
+    max_nurses_per_shift = models.PositiveIntegerField(default=3)  # e.g., {"Morning": 3, "Afternoon": 2, "Night": 1}
     ward = models.CharField(max_length=50, default='OBGYN')
     max_shifts_per_day = models.PositiveIntegerField(default=2)
     max_shifts_per_week = models.PositiveIntegerField(default=5)
