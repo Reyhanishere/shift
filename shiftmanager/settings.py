@@ -31,7 +31,6 @@ DJANGO_APPS = [
     'django.contrib.sites'
 ]
 THIRD_PARTY_APPS = [
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -45,6 +44,7 @@ SITE_ID = 2
 
 PROJECT_APPS = [
     'schedule.apps.ScheduleConfig',
+    
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS  + THIRD_PARTY_APPS
@@ -121,7 +121,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "schedule.UserProfile"
+AUTH_USER_MODEL = "schedule.CustomUser"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

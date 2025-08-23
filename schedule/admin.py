@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import NurseProfile, Shift, ShiftRequest, SchedulingRule
+from .models import NurseProfile, Shift, ShiftRequest, UserProfileSchedulingRule
 
 @admin.register(NurseProfile)
 class NurseProfileAdmin(admin.ModelAdmin):
@@ -13,6 +13,6 @@ class ShiftAdmin(admin.ModelAdmin):
 class ShiftRequestAdmin(admin.ModelAdmin):
     list_display = ['nurse', 'date', 'shift_type', 'status']
 
-@admin.register(SchedulingRule)
-class SchedulingRuleAdmin(admin.ModelAdmin):
+@admin.register(UserProfileSchedulingRule)
+class UserProfileSchedulingRuleAdmin(admin.ModelAdmin):
     list_display = ['description']

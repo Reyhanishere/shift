@@ -83,7 +83,7 @@ class ShiftRequest(models.Model):
     def __str__(self):
         return f"{self.nurse.full_name} - {self.shift} ({self.status})"
     
-class SchedulingRule(models.Model):
+class UserProfileSchedulingRule(models.Model):
     shift_type = models.CharField(max_length=50,default="MORNING")
     head_nurse = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     allow_post_night_off = models.BooleanField(default=True)
@@ -103,3 +103,4 @@ class SchedulingRule(models.Model):
 
     def __str__(self):
         return f"Rules for {self.ward} by {self.head_nurse.username}"
+

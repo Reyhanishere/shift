@@ -21,9 +21,7 @@ from django.utils import timezone
 from allauth.account.views import SignupView as AllauthSignupView
 
 from .forms import UserRegisterForm, NurseProfileForm, ShiftRequestForm
-from .models import Shift, NurseProfile, ShiftRequest, SchedulingRule
-
-
+from .models import Shift, NurseProfile, ShiftRequest, UserProfileSchedulingRule
 
 
 def home(request):
@@ -182,7 +180,7 @@ def is_headnurse(user):
 @user_passes_test(is_headnurse)
 def generate_schedule(request):
     """Head nurse generates schedule based on rules & requests"""
-    rules = SchedulingRule.objects.first()
+    rules = UserProfileSchedulingRule.objects.first()
     if not rules:
         messages.error(request, "Scheduling rules are not set.")
         return redirect("headnurse_dashboard")

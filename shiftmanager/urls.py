@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from schedule.views import CustomSignupView, ShiftListView
+from schedule.views import CustomSignupView
 
 
 urlpatterns = [
@@ -10,7 +10,7 @@ urlpatterns = [
 
     path("accounts/signup/", CustomSignupView.as_view(), name="account_signup"),
     path("accounts/", include("allauth.urls")),
-    path("", ShiftListView.as_view(), name="home"),
+
    
     path('', include('schedule.urls')),
 ]
